@@ -1,0 +1,46 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-java
+  namespace: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-java
+  template:
+    metadata:
+      labels:
+        app: user-java
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: poi
+        image: registryrhx6769.azurecr.io/user-java:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: SQL_USER
+          value: "sqladminrHx6769"
+        - name: SQL_DBNAME
+          value: "mydrivingDB"
+        - name: SQL_PASSWORD
+          value: "Containerlab4"
+        - name: SQL_SERVER
+          value: "sqlserverrhx6769.database.windows.net"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Local"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-java
+  namespace: api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: user-java
